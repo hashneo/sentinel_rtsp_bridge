@@ -73,6 +73,7 @@ function _module(config) {
 */
                         .videoCodec('copy')
                         .audioCodec('copy')
+                        .addOption('-rtsp_transport', 'tcp' )
                         .addOption('-hls_init_time', 2)
                         .addOption('-hls_time', 2)
                         .addOption('-hls_list_size', 10)

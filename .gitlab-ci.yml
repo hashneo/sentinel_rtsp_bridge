@@ -27,7 +27,7 @@ build_job:
     - docker logout docker.steventaylor.me
     - docker rmi $REGISTRY_IMAGE:$CI_PIPELINE_ID-$CI_COMMIT_SHA $REGISTRY_IMAGE:latest
 
-deploy_job:
+- deploy_job:
   stage: deploy
   only:
     - master
