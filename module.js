@@ -64,6 +64,7 @@ function _module(config) {
             function startStreamProcess( data, _fulfill, _reject ) {
                 try {
                     let proc = ffmpeg(data.source, {timeout: 432000})
+                        .inputOptions('-rtsp_transport', 'tcp' )
                         //.videoBitrate(1024)
 /*
                         .videoCodec('libx264')
@@ -73,7 +74,7 @@ function _module(config) {
 */
                         .videoCodec('copy')
                         .audioCodec('copy')
-                        .addOption('-rtsp_transport', 'tcp' )
+
                         .addOption('-hls_init_time', 2)
                         .addOption('-hls_time', 2)
                         .addOption('-hls_list_size', 10)
@@ -84,6 +85,9 @@ function _module(config) {
                         //.addOption('-hls_flags', 'single_file' )
                         // setup event handlers
                         .on('start', function (commandLine) {
+
+                            console.log(commandLine);
+
                             let i = 100;
 
                             function waitForFile() {
@@ -118,13 +122,15 @@ function _module(config) {
                             });
                         })
                         .on('error', function (err) {
-                            fs.removeSync(streamPath);
                             delete streams[id];
+                            fs.removeSync(streamPath);
+                            console.log(err);
                             _reject(err);
                         })
                         .save(m3u8);
                 }
                 catch(err){
+                    console.log(err);
                     fs.removeSync(streamPath);
                     delete streams[id];
                     _reject(err);
@@ -159,7 +165,7 @@ function _module(config) {
     this.getStreamData = (id, resource) =>{
         return new Promise( (fulfill, reject) => {
             streams[id].lastAccess = new Date().getTime();
-            fulfill( path.normalize( `${streamPath}/${id}/${resource}`) );
+            fulfill( path.normalize( `${storagePath}/${id}/${resource}`) );
         });
 
     };
