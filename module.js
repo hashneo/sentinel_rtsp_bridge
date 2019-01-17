@@ -82,8 +82,6 @@ function _module(config) {
                         .addOption('-hls_flags', 'delete_segments')
                         .addOption('-pix_fmt', 'yuv420p')
 
-                        //.addOption('-hls_flags', 'single_file' )
-                        // setup event handlers
                         .on('start', function (commandLine) {
 
                             console.log(commandLine);
@@ -124,7 +122,11 @@ function _module(config) {
                         .on('error', function (err) {
                             delete streams[id];
                             fs.removeSync(streamPath);
-                            console.log(err);
+                            if (!err.message.includes('SIGKILL')){
+                                console.log(err);
+                            }else{
+
+                            }
                             _reject(err);
                         })
                         .save(m3u8);
@@ -174,7 +176,9 @@ function _module(config) {
         let _now = new Date().getTime();
         Object.keys( streams ).forEach( (id) => {
             try {
-                if (_now - streams[id].lastAccess > (5 * 60000)) {
+                let diff = _now - streams[id].lastAccess;
+
+                if (diff > (5 * 60000)) {
                     streams[id].proc.kill();
                 }
             }catch(err){
