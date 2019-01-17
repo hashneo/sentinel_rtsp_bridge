@@ -57,7 +57,7 @@ function _module(config) {
             }
             catch(e){}
 
-            fs.mkdirSync(streamPath, true);
+            fs.mkdirSync(streamPath, { recursive: true } );
 
             let m3u8 = `${streamPath}/stream.m3u8`;
 
@@ -65,12 +65,12 @@ function _module(config) {
                 try {
                     let proc = ffmpeg(data.source, {timeout: 432000})
                         .inputOptions('-rtsp_transport', 'tcp' )
-                        //.videoBitrate(1024)
 /*
+                        .videoBitrate(1024)
                         .videoCodec('libx264')
-                        .addOption('-profile:v', 'baseline')
-                        .audioCodec('libmp3lame')
-                        .audioBitrate('128k')
+                        .addOption('-profile:v', 'main')
+                        .audioCodec('aac')
+                        .audioBitrate('48k')
 */
                         .videoCodec('copy')
                         .audioCodec('copy')
@@ -88,7 +88,7 @@ function _module(config) {
 
                             console.log(commandLine);
 
-                            let i = 100;
+                            let i = 10000;
 
                             function waitForFile() {
                                 fs.stat(m3u8, (err, stats) => {
@@ -174,7 +174,7 @@ function _module(config) {
         let _now = new Date().getTime();
         Object.keys( streams ).forEach( (id) => {
             try {
-                if (_now - streams[id].lastAccess > 60000) {
+                if (_now - streams[id].lastAccess > (5 * 60000)) {
                     streams[id].proc.kill();
                 }
             }catch(err){

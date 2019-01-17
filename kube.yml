@@ -11,7 +11,7 @@ spec:
     targetPort: 5000
   selector:
     app: rtsp-bridge
-    context: sentinel-services
+    context: sentinel
     version: v1
 ---
 apiVersion: extensions/v1beta1
@@ -24,7 +24,7 @@ spec:
     metadata:
       labels:
         app: rtsp-bridge
-        context: sentinel-services
+        context: sentinel
         version: v1
     spec:
       containers:
