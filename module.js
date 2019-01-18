@@ -41,7 +41,7 @@ function _module(config) {
                 if ( streams[id].source === data.source ){
                     alreadyDefined = true;
                     if (fulfill)
-                        fulfill( { id: id, endpoint: streams[id].endpiont } );
+                        fulfill( { id: id, endpoint: streams[id].endpoint } );
                 }
             });
 
