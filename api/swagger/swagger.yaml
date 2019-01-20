@@ -76,7 +76,7 @@ paths:
         default:
           $ref: '#/responses/Error'
 
-  /stream/{id}:
+  /stream/{id}/{type}:
     x-swagger-router-controller: stream
     delete:
       tags:
@@ -90,6 +90,14 @@ paths:
         name: id
         required: true
         type: string
+      - in: path
+        name: type
+        required: true
+        type: string
+        enum: [
+          live,
+          image
+        ]
       responses:
         200:
           description: confirmation
@@ -98,7 +106,7 @@ paths:
         default:
           $ref: '#/responses/Error'
 
-  /stream/{id}/*:
+  /stream/{id}/{type}/*:
     x-swagger-router-controller: stream
     get:
       tags:
@@ -112,6 +120,14 @@ paths:
         name: id
         required: true
         type: string
+      - in: path
+        name: type
+        required: true
+        type: string
+        enum: [
+          live,
+          image
+        ]
       responses:
         200:
           description: confirmation
@@ -146,9 +162,16 @@ definitions:
   StreamSource:
     required:
     - source
+    - type
     properties:
       source:
         type: string
+      type:
+        type: string
+        enum: [
+          live,
+          image
+        ]
 
   StreamInfo:
     required:
