@@ -67,8 +67,25 @@ function _module(config) {
 
             function startStreamProcess( data, _fulfill, _reject ) {
                 try {
-                    let proc = ffmpeg(data.source, {timeout: 432000})
-                        .inputOptions('-rtsp_transport', 'tcp' );
+                    let proc = ffmpeg(data.source, {timeout: 432000});
+
+                    if ( data.streamTransport === 'tcp' ) {
+                        proc
+                            .inputOptions('-rtsp_transport', 'tcp');
+                    }
+
+                    //proc.addOption('-re')
+
+                    if (data.headers){
+                        Object.keys(data.headers).forEach( (header) =>{
+                            proc.addOption('-headers', `"${header}: ${data.headers[header]}"`)
+                        });
+                    }
+
+                    if (data.type === 'live') {
+                        proc
+                            .videoCodec('copy')
+                            .audioCodec('copy')
 /*
                         .videoBitrate(1024)
                         .videoCodec('libx264')
@@ -76,12 +93,6 @@ function _module(config) {
                         .audioCodec('aac')
                         .audioBitrate('48k')
 */
-
-                    if (data.type === 'live') {
-                        proc
-                            .videoCodec('copy')
-                            .audioCodec('copy')
-
                             .addOption('-hls_init_time', 2)
                             .addOption('-hls_time', 2)
                             .addOption('-hls_list_size', 10)
@@ -140,7 +151,8 @@ function _module(config) {
                             });
                         })
                         .on('error', function (err) {
-                            delete streams[id][data.type];
+                            if ( streams[id] )
+                                delete streams[id][data.type];
                             fs.removeSync(streamPath);
                             if (!err.message.includes('SIGKILL')){
                                 console.log(err);

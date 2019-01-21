@@ -172,6 +172,14 @@ definitions:
           live,
           image
         ]
+      streamTransport:
+        type: string
+        enum: [
+            tcp,
+            udp
+          ]
+      headers:
+        type: object
 
   StreamInfo:
     required:
