@@ -3,8 +3,6 @@ FROM ubuntu:18.04
 WORKDIR /src
 ADD . .
 
-ARG CI_JOB_AUTH
-
 RUN apt-get update && \
     apt-get -y install git gnupg curl software-properties-common
 
@@ -12,8 +10,6 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
 
 RUN add-apt-repository -y ppa:jonathonf/ffmpeg-4 && \
     apt-get install -y nodejs ffmpeg
-
-RUN if [ ! -z "${CI_JOB_AUTH}" ] ; then git config --global url.http://${CI_JOB_AUTH}@gitlab.steventaylor.me/.insteadOf http://gitlab.steventaylor.me/ ; fi
 
 RUN npm install && \
     apt-get -y remove git && \
